@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HousingLocationComponent } from '../housing-location/housing-location.component';
 import { HousingLocation } from '../housing-location';
@@ -16,12 +16,12 @@ import { AsyncPipe } from '@angular/common';
     <section>
       <form>
         <input data-testid='city-filter' type="text" placeholder="Filter by city" #cityFilter />
-        <button class="primary" type="button" (click)="onSearchClick(cityFilter.value)">Search</button>
+        <button class="primary" type="button" (click)="onSearchClick()">Search</button>
       </form>
     </section>
 
     <section style="margin-top: 2rem;">
-      <h3>Counter: {{ counter$ | async }}</h3>
+      <h3>Counter: <span data-testid="counter-check">{{ counter$ | async }}</span></h3>
       <button (click)="incrementCount()">Increment</button>
       <button (click)="decrementCount()">Decrement</button>
     </section>
@@ -42,9 +42,14 @@ export class HomeComponent {
   housingService: HousingService = inject(HousingService);
   filteredHousingLocationList: HousingLocation[] = [];
 
+  @ViewChild('cityFilter')
+  cityFilter!: ElementRef;
+
+
   //NgRx
   store = inject(Store);
 
+  // counter$ = this.store.select('counter');
   counter$ = this.store.select(selectCounterValue);
 
   // formData = new FormGroup({
@@ -69,7 +74,8 @@ export class HomeComponent {
     this.filteredHousingLocationList = this.housingLocationList;
   }
 
-  onSearchClick = (text: string) => {
+  onSearchClick = () => {
+    const text: string = this.cityFilter.nativeElement.value;
     if (!text) {
       this.filteredHousingLocationList = this.housingLocationList;
     } else {

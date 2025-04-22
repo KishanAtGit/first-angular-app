@@ -30,5 +30,9 @@ test.describe('Input Test', () => {
         await expect(housingCards).toHaveCount(expectedCount);
     });
 
+    // test('Should increase the count by 1 when clicked Increment button and should decrease the count by 2 when clicked Decreament button', async ({ page }) => {
+
+    // })
+
 })
 

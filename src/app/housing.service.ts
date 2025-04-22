@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HousingLocation } from './housing-location';
-import { Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -161,8 +161,20 @@ export class HousingService {
     setTimeout(() => observer.next(2), 2000);
     setTimeout(() => observer.next(3), 3000);
     setTimeout(() => observer.next(4), 4000);
-    setTimeout(() => observer.next(5), 5000);
+    setTimeout(() => observer.next(5), 7000);
+    // setTimeout(() => observer.error(new Error('Something went wrong! Please try again.')), 9000);
+    setTimeout(() => observer.complete(), 10000);
   })
+
+  promiseData = new Promise((res, rej) => {
+    res([13, 24, 35, 64, 75]);
+  })
+
+  observable2 = of([1, 2, 3, 4, 5], "Hi", 6, 7, 8, 9, 10);
+
+  observable3 = from('8888888888888');
+
+  observable4 = from(this.promiseData)
 
   getObservable: any = () => {
     // console.log("observable");
@@ -173,6 +185,18 @@ export class HousingService {
     //   return val;
     // })
     return this.observable;
+  }
+
+  getObservable2: any = () => {
+    return this.observable2;
+  }
+
+  getObservable3: any = () => {
+    return this.observable3;
+  }
+
+  getObservable4: any = () => {
+    return this.observable4;
   }
 
   constructor() { }

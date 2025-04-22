@@ -46,6 +46,19 @@ li {
   margin-bottom: 15px;
 }
 
+.test-observable {
+  margin-top: 2vh;
+  margin-bottom: 2vh;
+}
+
+.test-observable div {
+  margin-bottom: 2vh;
+}
+
+.test-item:not(:last-child) {
+  margin-bottom: 2vh;
+}
+
 label,
 input {
   display: block;
