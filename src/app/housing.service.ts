@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HousingLocation } from './housing-location';
-import { from, Observable, of } from 'rxjs';
+import { firstValueFrom, from, map, Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +13,21 @@ export class HousingService {
   url = "http://localhost:3000/locations";
 
   async getAllHousingLocations(): Promise<HousingLocation[]> {
-    const res = await fetch(this.url);
-    const jsonRes = await res.json()
-    const formattedRes = jsonRes.map((housingLocation: HousingLocation) => ({
-      ...housingLocation, photo: `${this.baseUrl}${housingLocation.photo}`
+    const res: Observable<any> = from(fetch(this.url))
 
-    }));
+    const formattedRes: Observable<HousingLocation[]> = res.pipe(
+      switchMap((res: Response) => res.json()),
+      map((res: any) => res.map((housingLocation: HousingLocation) => ({
+        ...housingLocation, photo: `${this.baseUrl}${housingLocation.photo}`
+      })))
+    );
+    // const jsonRes = await res.json()
+    // const formattedRes = jsonRes.map((housingLocation: HousingLocation) => ({
+    //   ...housingLocation, photo: `${this.baseUrl}${housingLocation.photo}`
 
-    return formattedRes ?? [];
+    // }));
+
+    return await firstValueFrom(formattedRes) ?? [];
   }
 
   async getHousingLocationById(id: number): Promise<HousingLocation> {
@@ -174,7 +182,9 @@ export class HousingService {
 
   observable3 = from('8888888888888');
 
-  observable4 = from(this.promiseData)
+  observable4 = from([1, 2, 3, 4, 5]);
+
+  observable5 = from(this.promiseData)
 
   getObservable: any = () => {
     // console.log("observable");
@@ -197,6 +207,10 @@ export class HousingService {
 
   getObservable4: any = () => {
     return this.observable4;
+  }
+
+  getObservable5: any = () => {
+    return this.observable5;
   }
 
   constructor() { }

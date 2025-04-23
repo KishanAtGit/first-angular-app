@@ -1,14 +1,16 @@
 import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HousingService } from '../housing.service';
 import { HousingLocation } from '../housing-location';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { fromEvent } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-details',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, RouterModule],
   template: `
     <article>
       <img class="listing-photo" [src]="housingLocation?.photo" alt="">
@@ -43,8 +45,13 @@ import { fromEvent } from 'rxjs';
         <button (click)="observableHandler()" class="primary">Test Observable</button>
         <div *ngFor = "let data of observableData" >{{data}}</div>
       </section>
+
       <section class="test-event" id='test-from-event'>
         <button #testFromEvent class="primary">From Event</button>
+      </section>
+
+      <section class="test-subject">
+        <button [routerLink]="['/test-subject']" class="primary">Redirect To Test Subject Page</button>
       </section>
     </article>
   `,
@@ -74,7 +81,9 @@ export class DetailsComponent implements AfterViewInit {
   }
 
   observableHandler = () => {
-    this.housingService.getObservable4().subscribe({
+    const observableObj = this.housingService.getObservable4()
+    const formattedObservableObj = observableObj.pipe(map((val: number) => val * 2));
+    formattedObservableObj.subscribe({
       next: (val: number) => {
         this.observableData.push(val);
       },
